@@ -1,0 +1,11 @@
+<h2>Available Time Slots for Dr. {{ doctor.name }} {{ doctor.surname }}</h2>
+
+<form method="post">
+    {% csrf_token %}
+    {% for slot in doctor.available_slots.all %}
+        <input type="checkbox" name="slot" value="{{ slot.id }}"> {{ slot.slot_time }}<br>
+    {% endfor %}
+    <button type="submit">Book Appointment</button>
+</form>
+
+

@@ -1,0 +1,21 @@
+<!-- templates/accounts/doctor_list.html -->
+
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Doctors List</h2>
+
+
+<!-- List of doctors -->
+<ul>
+  {% for doctor in doctors %}
+    <li>
+      <!-- Make each doctor's name a clickable link -->
+      <a href="{% url 'doctor_detail' doctor.id %}">{{ doctor.name }} {{ doctor.surname }}</a> - {{ doctor.profession }}
+    </li>
+  {% endfor %}
+</ul>
+<!-- Add a logout link -->
+<p><a href="{% url 'login' %}">Logout</a></p>
+
+{% endblock %}
