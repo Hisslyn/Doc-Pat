@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  db:
+    image: "postgres"
+    environment:
+      POSTGRES_DB: your_db_name
+      POSTGRES_USER: your_db_user
+      POSTGRES_PASSWORD: your_db_password
+    volumes:
+      - "postgres_data:/var/lib/postgresql/data"
+
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DEBUG=1  # Remember to turn this off in production
+
+volumes:
+  postgres_data:
