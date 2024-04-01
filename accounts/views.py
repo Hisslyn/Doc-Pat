@@ -25,3 +25,19 @@ def doctor_detail(request, doctor_id):
     doctor = get_object_or_404(Doctor, pk=doctor_id)
     all_slots = TimeSlot.objects.all()
     return render(request, 'accounts/doctor_detail.html', {'doctor': doctor, 'all_slots': all_slots})
+
+
+
+def book_time_slot(request, doctor_id):
+    if request.method == 'POST':
+        doctor = get_object_or_404(Doctor, id=doctor_id)
+        selected_slot_id = request.POST.get('slot_id')
+        selected_slot = get_object_or_404(TimeSlot, id=selected_slot_id)
+
+        # Remove the selected time slot from the doctor's available slots
+        doctor.available_slots.remove(selected_slot)
+
+        # Optionally, save the booking information to another model or perform other actions
+
+        # Redirect to a new URL:
+        return redirect('some_view_name')

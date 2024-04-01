@@ -14,5 +14,6 @@ urlpatterns = [
     path('accounts/doctors/<int:doctor_id>/', views.doctor_detail, name='doctor_detail'),
     path('accounts/logout/', LogoutView.as_view(next_page='/accounts/login'), name='logout'),
     path('accounts/login/', auth_views.LoginView.as_view(), name='login'),
+    path('doctors/<int:doctor_id>/book/', views.book_time_slot, name='book_time_slot'),
 ]
 
