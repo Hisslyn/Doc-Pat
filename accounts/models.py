@@ -9,45 +9,26 @@ class CustomUser(AbstractUser):
 
 class TimeSlot(models.Model):
     slot_time = models.TimeField(unique=True)
+    is_available = models.BooleanField(default=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
-        return f"{self.slot_time.strftime('%H:%M')}"
+        return f"{self.slot_time} - {'Available' if self.is_available else 'Booked'}"
 
-    class Meta:
-        ordering = ['slot_time']
+    @property
+    def display_time(self):
+        return self.slot_time.strftime('%H:%M')
 
         
 class Doctor(models.Model):
     name = models.CharField(max_length=100)
     surname = models.CharField(max_length=100)
     profession = models.CharField(max_length=100)
-
-    TIME_SLOTS = (
-    ('09:00', '09:30'),
-    ('09:30', '10:00'),
-    ('10:00', '10:30'),
-    ('10:30', '11:00'),
-    ('11:00', '11:30'),
-    ('11:30', '12:00'),
-    ('12:00', '12:30'),
-    ('12:30', '13:00'),
-    ('13:00', '13:30'),
-    ('13:30', '14:00'),
-    ('14:00', '14:30'),
-    ('14:30', '15:00'),
-    ('15:00', '15:30'),
-    ('15:30', '16:00'),
-    ('16:00', '16:30'),
-    ('16:30', '17:00'),
-    ('17:00', '17:30'),
-    ('17:30', '18:00'),
-)
-
     
     def __str__(self):
         return f"{self.name} {self.surname} - {self.profession}"
     
-    available_slots = models.ManyToManyField(TIME_SLOTS, blank=True)
+    available_slots = models.ManyToManyField(TimeSlot, blank=False)
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)  # Call the "real" save method.

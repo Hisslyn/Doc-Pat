@@ -1,7 +1,6 @@
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 from accounts.models import TimeSlot
-from datetime import time, timedelta, datetime, date
-
+from datetime import datetime, time, timedelta
 
 class Command(BaseCommand):
     help = 'Populates the database with time slots from 9:00 to 18:00 at 30-minute intervals'
@@ -13,8 +12,11 @@ class Command(BaseCommand):
 
         current_time = start_time
         while current_time < end_time:
-            TimeSlot.objects.get_or_create(slot_time=current_time)
-            # This combines the current time with today's date, adds the interval, and then extracts the time again
-            current_time = (datetime.combine(date.today(), current_time) + interval).time()
+            # Here we assume that if the timeslot already exists, its availability doesn't change.
+            timeslot, created = TimeSlot.objects.get_or_create(
+                slot_time=current_time,
+                defaults={'is_available': True}  # This sets is_available only if the timeslot is being created
+            )
+            current_time = (datetime.combine(datetime.today(), current_time) + interval).time()
 
         self.stdout.write(self.style.SUCCESS('Successfully populated time slots'))
